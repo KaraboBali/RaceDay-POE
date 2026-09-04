@@ -11,9 +11,9 @@ RaceDay is a full-stack event management system for the South African road runni
 
 This part contains the planning documents for the system, all inside `/docs`:
 
-* `docs/raceday\_erd.png` — Entity Relationship Diagram (6 entities: Users, Events, Categories, Routes, EventEnrolments, Results)
-* `docs/endpoint\_plan.md` — Full API endpoint plan covering Authentication, User Profile, Events, Categories, Routes, Enrolments, and Results
-* `docs/raceday\_schema.sql` — SQL Server script creating the full schema with sample data (2 Organisers, 2 Participants, 3 Events, categories, and enrolments)
+* `docs/raceday\\\_erd.png` — Entity Relationship Diagram (6 entities: Users, Events, Categories, Routes, EventEnrolments, Results)
+* `docs/endpoint\\\_plan.md` — Full API endpoint plan covering Authentication, User Profile, Events, Categories, Routes, Enrolments, and Results
+* `docs/raceday\\\_schema.sql` — SQL Server script creating the full schema with sample data (2 Organisers, 2 Participants, 3 Events, categories, and enrolments)
 
 No API code has been written in this part, per the brief.
 
@@ -23,7 +23,7 @@ No API code has been written in this part, per the brief.
 
 ## Video
 
-<!-- Add your unlisted YouTube walkthrough link here -->
+https://youtu.be/yDgAZ5eMQUs
 
 [Part 1 video walkthrough](PASTE_YOUTUBE_LINK_HERE)
 
@@ -32,5 +32,5 @@ No API code has been written in this part, per the brief.
 <!-- Fill in once Part 2/3 add real setup steps, e.g. connection strings, running migrations, etc. -->
 
 1. Clone the repository.
-2. Open `docs/raceday\_schema.sql` in SQL Server Management Studio and run it against a clean database to create the schema and sample data.
+2. Open `docs/raceday\\\_schema.sql` in SQL Server Management Studio and run it against a clean database to create the schema and sample data.
 
