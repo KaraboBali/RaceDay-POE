@@ -1,0 +1,18 @@
+# Visual Studio / .NET
+bin/
+obj/
+*.user
+.vs/
+
+# SQL Server
+*.mdf
+*.ldf
+*.ndf
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Environment/secrets
+*.env
+appsettings.Development.json
