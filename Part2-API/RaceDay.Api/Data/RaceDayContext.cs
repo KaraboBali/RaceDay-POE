@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RaceDay.Api.Models;
+using Route = RaceDay.Api.Models.Route;
 
 namespace RaceDay.Api.Data;
 
