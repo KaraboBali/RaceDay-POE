@@ -10,7 +10,9 @@ public class Event
     public DateTime Date { get; set; }
     public string Location { get; set; } = string.Empty;
     public string? Description { get; set; }
-    public EventType EventType { get; set; }   // added to meet the Part 2 brief
+    public EventType EventType { get; set; }
+    public decimal? DistanceKm { get; set; }
+    public string? BannerUrl { get; set; }
 
     public User Organiser { get; set; } = null!;
     public Route? Route { get; set; }

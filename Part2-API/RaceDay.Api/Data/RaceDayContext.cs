@@ -25,6 +25,7 @@ public class RaceDayContext : DbContext
             e.HasIndex(u => u.Email).IsUnique();
             e.Property(u => u.PasswordHash).HasMaxLength(255).IsRequired();
             e.Property(u => u.Role).HasMaxLength(20).IsRequired().HasDefaultValue("Participant");
+            e.Property(u => u.ProfilePictureUrl).HasMaxLength(255);
         });
 
         b.Entity<Event>(e =>
@@ -34,8 +35,10 @@ public class RaceDayContext : DbContext
             e.Property(x => x.Location).HasMaxLength(150).IsRequired();
             e.Property(x => x.Description).HasMaxLength(500);
             e.Property(x => x.EventType).HasConversion<string>().HasMaxLength(10);
+            e.Property(x => x.DistanceKm).HasPrecision(6, 2);
+            e.Property(x => x.BannerUrl).HasMaxLength(255);
             e.HasOne(x => x.Organiser).WithMany(u => u.OrganisedEvents)
-                .HasForeignKey(x => x.OrganiserId).OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(x => x.OrganiserId).OnDelete(DeleteBehavior.Restrict);
         });
 
         b.Entity<Route>(e =>
@@ -59,11 +62,12 @@ public class RaceDayContext : DbContext
         b.Entity<EventEnrolment>(e =>
         {
             e.ToTable("EventEnrolments");
+            e.Property(x => x.Status).HasMaxLength(20).IsRequired().HasDefaultValue("Pending");
             e.HasIndex(x => new { x.ParticipantId, x.CategoryId }).IsUnique();
             e.HasOne(x => x.Participant).WithMany(u => u.Enrolments)
-                .HasForeignKey(x => x.ParticipantId).OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(x => x.ParticipantId).OnDelete(DeleteBehavior.Restrict);
             e.HasOne(x => x.Category).WithMany(c => c.Enrolments)
-                .HasForeignKey(x => x.CategoryId).OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(x => x.CategoryId).OnDelete(DeleteBehavior.Restrict);
         });
 
         b.Entity<Result>(e =>
