@@ -5,10 +5,41 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using RaceDay.Api.Data;
+using RaceDay.Api.Services;
 
 namespace RaceDay.Tests;
 
-// Starts the real API in memory, but swaps SQL Server for an in-memory database.
+// Stands in for Azure Blob Storage during tests, so no cloud account is needed.
+public class FakeBlobStorage : IBlobStorageService
+{
+    private readonly Dictionary<string, (byte[] Data, string Type)> _store = new();
+
+    public async Task<string> UploadAsync(Stream content, string contentType, string extension)
+    {
+        using var ms = new MemoryStream();
+        await content.CopyToAsync(ms);
+        var name = $"{Guid.NewGuid():N}{extension}";
+        _store[name] = (ms.ToArray(), contentType);
+        return name;
+    }
+
+    public Task<(Stream Content, string ContentType)?> DownloadAsync(string blobName)
+    {
+        if (!_store.TryGetValue(blobName, out var item))
+            return Task.FromResult<(Stream Content, string ContentType)?>(null);
+        return Task.FromResult<(Stream Content, string ContentType)?>(
+            (new MemoryStream(item.Data), item.Type));
+    }
+
+    public Task DeleteAsync(string blobName)
+    {
+        _store.Remove(blobName);
+        return Task.CompletedTask;
+    }
+}
+
+// Starts the real API in memory, but swaps SQL Server for an in-memory database
+// and Azure Blob Storage for the fake above.
 public class ApiFactory : WebApplicationFactory<Program>
 {
     private readonly string _dbName = Guid.NewGuid().ToString();
@@ -22,6 +53,10 @@ public class ApiFactory : WebApplicationFactory<Program>
             if (old != null) services.Remove(old);
 
             services.AddDbContext<RaceDayContext>(o => o.UseInMemoryDatabase(_dbName));
+
+            var blob = services.SingleOrDefault(s => s.ServiceType == typeof(IBlobStorageService));
+            if (blob != null) services.Remove(blob);
+            services.AddSingleton<IBlobStorageService, FakeBlobStorage>();
         });
     }
 }
