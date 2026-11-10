@@ -20,7 +20,7 @@ public class UsersController : ControllerBase
         var id = HttpContext.Session.GetInt32("UserId")!.Value;
         var u = await _db.Users.FindAsync(id);
         if (u == null) return NotFound(new { message = "User not found." });
-        return Ok(new { u.Id, u.Name, u.Email, u.Role });
+        return Ok(new { u.Id, u.Name, u.Email, u.Role, u.ProfilePictureUrl });
     }
 
     // Both roles: update own profile
@@ -41,7 +41,7 @@ public class UsersController : ControllerBase
         u.Name = dto.Name;
         u.Email = dto.Email;
         await _db.SaveChangesAsync();
-        return Ok(new { u.Id, u.Name, u.Email, u.Role });
+        return Ok(new { u.Id, u.Name, u.Email, u.Role, u.ProfilePictureUrl });
     }
 
     // Organiser: view a user (from your endpoint plan)
@@ -51,6 +51,6 @@ public class UsersController : ControllerBase
     {
         var u = await _db.Users.FindAsync(id);
         if (u == null) return NotFound(new { message = "User not found." });
-        return Ok(new { u.Id, u.Name, u.Email, u.Role });
+        return Ok(new { u.Id, u.Name, u.Email, u.Role, u.ProfilePictureUrl });
     }
 }
