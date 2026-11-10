@@ -1,32 +1,22 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using RaceDay.MVC.Models;
 
-namespace RaceDay.MVC.Controllers
+namespace RaceDay.MVC.Controllers;
+
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    public IActionResult Index() => View();
+
+    public IActionResult Error() => View();
+
+    public IActionResult StatusPage(int code)
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        ViewData["Code"] = code;
+        ViewData["Heading"] = code switch
         {
-            _logger = logger;
-        }
-
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+            404 => "Page not found",
+            403 => "Access denied",
+            _ => "Something went wrong"
+        };
+        return View();
     }
 }

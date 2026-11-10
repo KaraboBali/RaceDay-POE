@@ -1,0 +1,8 @@
+﻿@{
+    ViewData["Title"] = ViewData["Heading"]?.ToString();
+}
+<div class="container text-center my-5">
+    <h1 class="display-4">@ViewData["Heading"]</h1>
+    <p class="lead">We could not complete that request. Please head back and try again.</p>
+    <a class="btn btn-rd" asp-controller="Home" asp-action="Index">Back to the start line</a>
+</div>
