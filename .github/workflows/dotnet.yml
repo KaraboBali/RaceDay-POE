@@ -1,8 +1,8 @@
-name: RaceDay API CI
+name: RaceDay CI
 
 on:
   push:
-    branches: [ part2-api, main ]
+    branches: [ part2-api, part3-mvc, main ]
   pull_request:
     branches: [ main ]
 
@@ -22,8 +22,41 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore Part2-API/RaceDay.sln
 
-      - name: Build
+      - name: Build API and tests
         run: dotnet build Part2-API/RaceDay.sln --no-restore --configuration Release
+
+      - name: Build MVC project
+        run: dotnet build Part3-MVC/RaceDay.MVC/RaceDay.MVC/RaceDay.MVC.csproj --configuration Release
 
       - name: Run unit tests
         run: dotnet test Part2-API/RaceDay.sln --no-build --configuration Release --verbosity normal
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Build the MVC Docker image
+        run: docker build -t raceday-mvc Part3-MVC/RaceDay.MVC/RaceDay.MVC
+
+      - name: Start the container
+        run: >
+          docker run -d --name raceday-mvc -p 8080:8080
+          --add-host=host.docker.internal:host-gateway
+          -e ApiBaseUrl=http://host.docker.internal:5107/
+          raceday-mvc
+
+      - name: Check the container serves the site
+        run: |
+          for i in $(seq 1 20); do
+            if curl -fsS http://localhost:8080/Account/Login > /dev/null; then
+              echo "RaceDay MVC container is up and serving pages"
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs raceday-mvc
+          exit 1
