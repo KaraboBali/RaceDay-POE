@@ -101,7 +101,7 @@ A GitHub Actions workflow (`.github/workflows/dotnet.yml`) restores, builds and 
 ## Demo video
 
 YouTube (unlisted): *link to be added*
-[Part 1 video walkthrough](PASTE_YOUTUBE_LINK_HERE)
+[https://youtu.be/K1iQcBJf474)
 
 ## Setup Instructions
 
