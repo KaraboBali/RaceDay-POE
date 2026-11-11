@@ -1,0 +1,72 @@
+﻿@model EventListViewModel
+@{
+    ViewData["Title"] = "Events";
+}
+<section class="rd-hero py-4">
+    <div class="container">
+        <h1 class="mb-0" style="font-size:2.4rem">Find your <span>event</span></h1>
+    </div>
+</section>
+
+<div class="container mt-4">
+    <form method="get" asp-controller="Home" asp-action="Index" class="rd-card p-3 mb-4">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-5">
+                <label class="form-label">Search</label>
+                <input name="search" value="@Model.Search" class="form-control" placeholder="Event name or location" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Type</label>
+                <select name="type" class="form-select">
+                    <option value="">All types</option>
+                    @foreach (var t in new[] { "Run", "Walk", "Cycle" })
+                    {
+                        <option value="@t" selected="@(Model.Type == t)">@t</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="includePast" value="true" id="includePast" checked="@Model.IncludePast" />
+                    <label class="form-check-label" for="includePast">Include past</label>
+                </div>
+            </div>
+            <div class="col-md-2 d-grid">
+                <button type="submit" class="btn btn-rd">Filter</button>
+            </div>
+        </div>
+    </form>
+
+    @if (!Model.Events.Any())
+    {
+        <div class="rd-card p-5 text-center">
+            <h3>No events found</h3>
+            <p class="mb-0">Try a different search or include past events.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var e in Model.Events)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="rd-card h-100 d-flex flex-column">
+                        <partial name="_EventBanner" model="e" />
+                        <div class="p-3 d-flex flex-column flex-grow-1">
+                            <h3 class="mb-1">@e.Name</h3>
+                            <div class="text-muted small mb-2">@e.Date.ToString("ddd, dd MMM yyyy HH:mm") &middot; @e.Location</div>
+                            <div class="mb-3">
+                                <span class="rd-role-pill">@e.EventType</span>
+                                @if (e.DistanceKm.HasValue)
+                                {
+                                    <span class="ms-2 small">@e.DistanceKm.Value.ToString("0.##") km</span>
+                                }
+                            </div>
+                            <a class="btn btn-rd mt-auto" asp-controller="Events" asp-action="Details" asp-route-id="@e.Id">View details</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
