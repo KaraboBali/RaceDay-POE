@@ -1,0 +1,9 @@
+﻿@model EventItem
+@if (!string.IsNullOrEmpty(Model.BannerUrl))
+{
+    <img class="rd-event-banner" src="@Url.Action("Show", "Image", new { url = Model.BannerUrl })" alt="@Model.Name banner" />
+}
+else
+{
+    <div class="rd-banner-placeholder">@Model.EventType</div>
+}

@@ -1,0 +1,5 @@
+﻿@model string
+@{
+    var css = Model == "Confirmed" ? "status-confirmed" : Model == "Pending" ? "status-pending" : "status-other";
+}
+<span class="status-badge @css">@Model</span>
