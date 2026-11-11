@@ -1,0 +1,46 @@
+﻿@model List<MyResultItem>
+@{
+    ViewData["Title"] = "My Results";
+}
+<div class="container mt-4">
+    <h1>My results</h1>
+
+    @if (!Model.Any())
+    {
+        <div class="rd-card p-5 text-center">
+            <h3>No results yet</h3>
+            <p class="mb-0">Results appear here once an organiser publishes them after your event.</p>
+        </div>
+    }
+    else
+    {
+        <div class="rd-card table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr><th>Event</th><th>Date</th><th>Category</th><th>Finish time</th><th>Position</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model)
+                    {
+                        <tr>
+                            <td>@r.Event</td>
+                            <td>@(r.EventDate.Year > 1 ? r.EventDate.ToString("dd MMM yyyy") : "")</td>
+                            <td>@r.Category</td>
+                            <td class="fw-semibold">@DisplayHelpers.Time(r.FinishTime)</td>
+                            <td>
+                                @if (r.TotalFinishers > 0)
+                                {
+                                    <strong>@DisplayHelpers.Ordinal(r.Position)</strong> <span>out of @r.TotalFinishers finishers</span>
+                                }
+                                else
+                                {
+                                    <strong>@DisplayHelpers.Ordinal(r.Position)</strong>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

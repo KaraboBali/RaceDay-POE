@@ -1,0 +1,45 @@
+﻿@model List<MyEnrolmentItem>
+@{
+    ViewData["Title"] = "My Enrolments";
+}
+<div class="container mt-4">
+    <h1>My enrolments</h1>
+
+    @if (!Model.Any())
+    {
+        <div class="rd-card p-5 text-center">
+            <h3>No enrolments yet</h3>
+            <p>Find an event and take your first step to the start line.</p>
+            <a class="btn btn-rd" asp-controller="Home" asp-action="Index">Browse events</a>
+        </div>
+    }
+    else
+    {
+        <div class="rd-card table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr><th>Event</th><th>Date</th><th>Location</th><th>Category</th><th>Status</th><th></th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in Model)
+                    {
+                        <tr>
+                            <td><a asp-controller="Events" asp-action="Details" asp-route-id="@e.EventId">@e.Event</a></td>
+                            <td>@e.EventDate.ToString("dd MMM yyyy HH:mm")</td>
+                            <td>@e.EventLocation</td>
+                            <td>@e.Category</td>
+                            <td><partial name="_StatusBadge" model="e.Status" /></td>
+                            <td class="text-end">
+                                <form asp-action="Cancel" method="post" class="d-inline"
+                                      onsubmit="return confirm('Cancel this enrolment?');">
+                                    <input type="hidden" name="id" value="@e.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
