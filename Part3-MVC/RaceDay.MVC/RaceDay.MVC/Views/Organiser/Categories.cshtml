@@ -1,0 +1,63 @@
+﻿@model EventCategoriesViewModel
+@{
+    ViewData["Title"] = "Categories";
+}
+<div class="container mt-4">
+    <a asp-action="Events" class="text-decoration-none">&larr; Back to my events</a>
+    <h1 class="mt-2">Categories</h1>
+    <p class="text-muted">@Model.Event.Name &middot; @Model.Event.Date.ToString("dd MMM yyyy")</p>
+
+    <div class="rd-card rd-card-accent p-3 mb-4">
+        <h3>Add a category</h3>
+        <form asp-action="AddCategory" method="post" class="row g-2 align-items-end">
+            <input type="hidden" name="eventId" value="@Model.Event.Id" />
+            <div class="col-md-6">
+                <label class="form-label">Name (for example 5 km Fun Run)</label>
+                <input name="name" class="form-control" maxlength="100" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Distance (km)</label>
+                <input type="number" step="0.01" min="0.01" name="distanceKm" class="form-control" />
+            </div>
+            <div class="col-md-3 d-grid">
+                <button type="submit" class="btn btn-rd">Add category</button>
+            </div>
+        </form>
+    </div>
+
+    @if (!Model.Categories.Any())
+    {
+        <div class="rd-card p-4 text-center">No categories yet. Participants need at least one to enrol.</div>
+    }
+    else
+    {
+        @foreach (var c in Model.Categories)
+        {
+            <div class="rd-card p-3 mb-2">
+                <div class="d-flex flex-wrap gap-2 align-items-end">
+                    <form asp-action="UpdateCategory" method="post" class="row g-2 align-items-end flex-grow-1">
+                        <input type="hidden" name="eventId" value="@Model.Event.Id" />
+                        <input type="hidden" name="id" value="@c.Id" />
+                        <div class="col-md-6">
+                            <label class="form-label small mb-0">Name</label>
+                            <input name="name" value="@c.Name" class="form-control" maxlength="100" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small mb-0">Distance (km)</label>
+                            <input type="number" step="0.01" min="0.01" name="distanceKm" value="@c.DistanceKm.ToString("0.##")" class="form-control" />
+                        </div>
+                        <div class="col-md-3 d-grid">
+                            <button type="submit" class="btn btn-outline-rd">Save</button>
+                        </div>
+                    </form>
+                    <form asp-action="DeleteCategory" method="post"
+                          onsubmit="return confirm('Delete this category?');">
+                        <input type="hidden" name="eventId" value="@Model.Event.Id" />
+                        <input type="hidden" name="id" value="@c.Id" />
+                        <button type="submit" class="btn btn-outline-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        }
+    }
+</div>

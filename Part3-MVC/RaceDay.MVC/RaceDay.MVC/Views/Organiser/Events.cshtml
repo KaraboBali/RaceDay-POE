@@ -1,0 +1,54 @@
+﻿@model List<EventItem>
+@{
+    ViewData["Title"] = "My Events";
+}
+<div class="container mt-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+        <h1 class="mb-0">My events</h1>
+        <a class="btn btn-rd" asp-action="CreateEvent">+ Create event</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="rd-card p-5 text-center">
+            <h3>No events yet</h3>
+            <p>Create your first event to open enrolments.</p>
+            <a class="btn btn-rd" asp-action="CreateEvent">Create event</a>
+        </div>
+    }
+    else
+    {
+        <div class="rd-card table-responsive">
+            <table class="table align-middle mb-0">
+                <thead><tr><th>Event</th><th>Date</th><th>Location</th><th>Enrolled</th><th class="text-end">Manage</th></tr></thead>
+                <tbody>
+                    @foreach (var e in Model.OrderBy(x => x.Date))
+                    {
+                        <tr>
+                            <td>
+                                <div class="fw-semibold">@e.Name</div>
+                                <span class="rd-role-pill">@e.EventType</span>
+                            </td>
+                            <td>@e.Date.ToString("dd MMM yyyy HH:mm")</td>
+                            <td>@e.Location</td>
+                            <td>@e.EnrolmentCount</td>
+                            <td class="text-end">
+                                <div class="d-flex flex-wrap gap-1 justify-content-end">
+                                    <a class="btn btn-sm btn-outline-secondary" asp-action="EditEvent" asp-route-id="@e.Id">Edit</a>
+                                    <a class="btn btn-sm btn-outline-secondary" asp-action="Categories" asp-route-eventId="@e.Id">Categories</a>
+                                    <a class="btn btn-sm btn-outline-secondary" asp-action="Enrolments" asp-route-eventId="@e.Id">Enrolments</a>
+                                    <a class="btn btn-sm btn-outline-secondary" asp-action="Results" asp-route-eventId="@e.Id">Results</a>
+                                    <form asp-action="DeleteEvent" method="post" class="d-inline"
+                                          onsubmit="return confirm('Delete this event? This cannot be undone.');">
+                                        <input type="hidden" name="id" value="@e.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

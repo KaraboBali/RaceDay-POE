@@ -1,0 +1,56 @@
+﻿@model EventEnrolmentsViewModel
+@{
+    ViewData["Title"] = "Results";
+    var held = Model.Event.Date <= DateTime.Now;
+}
+<div class="container mt-4">
+    <a asp-action="Events" class="text-decoration-none">&larr; Back to my events</a>
+    <h1 class="mt-2">Results</h1>
+    <p class="text-muted">@Model.Event.Name &middot; @Model.Event.Date.ToString("dd MMM yyyy HH:mm")</p>
+
+    @if (!held)
+    {
+        <div class="alert alert-warning">Results can only be published after the event has taken place.</div>
+    }
+    else
+    {
+        <div class="alert alert-info">Enter the finish time as <strong>h:mm:ss</strong> or <strong>mm:ss</strong>, and the finishing position. Saved results show on the participant's My Results page.</div>
+    }
+
+    @if (!Model.Enrolments.Any())
+    {
+        <div class="rd-card p-5 text-center">Nobody has enrolled in this event.</div>
+    }
+    else
+    {
+        @foreach (var e in Model.Enrolments)
+        {
+            <div class="rd-card p-3 mb-2">
+                <form asp-action="SaveResult" method="post" class="row g-2 align-items-end">
+                    <input type="hidden" name="eventId" value="@Model.Event.Id" />
+                    <input type="hidden" name="enrolmentId" value="@e.Id" />
+                    <input type="hidden" name="resultId" value="@(e.ResultId ?? 0)" />
+                    <div class="col-md-4">
+                        <div class="fw-semibold">@e.Participant</div>
+                        <div class="small text-muted">@e.Category</div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small mb-0">Finish time</label>
+                        <input name="finishTime" class="form-control" placeholder="0:45:30"
+                               value="@(e.FinishTime.HasValue? DisplayHelpers.Time(e.FinishTime.Value) : "")"
+                               disabled="@(!held)" />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small mb-0">Position</label>
+                        <input type="number" min="1" name="position" class="form-control"
+                               value="@(e.Position.HasValue? e.Position.Value.ToString() : "")"
+                               disabled="@(!held)" />
+                    </div>
+                    <div class="col-md-3 d-grid">
+                        <button type="submit" class="btn btn-rd" disabled="@(!held)">@(e.ResultId.HasValue ? "Update result" : "Save result")</button>
+                    </div>
+                </form>
+            </div>
+        }
+    }
+</div>

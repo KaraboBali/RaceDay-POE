@@ -1,0 +1,66 @@
+﻿@model List<EventItem>
+@{
+    ViewData["Title"] = "Dashboard";
+    var upcoming = Model.Where(e => e.Date >= DateTime.Now).OrderBy(e => e.Date).ToList();
+}
+<section class="rd-hero py-4">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center">
+        <h1 class="mb-0" style="font-size:2.4rem">Organiser <span>dashboard</span></h1>
+        <a class="btn btn-rd" asp-action="CreateEvent">+ Create event</a>
+    </div>
+</section>
+
+<div class="container mt-4">
+    <div class="row g-3 mb-4">
+        <div class="col-md-4"><div class="rd-card rd-stat"><div class="num">@Model.Count</div>Events</div></div>
+        <div class="col-md-4"><div class="rd-card rd-stat"><div class="num">@Model.Sum(e => e.EnrolmentCount)</div>Total enrolments</div></div>
+        <div class="col-md-4"><div class="rd-card rd-stat"><div class="num">@upcoming.Count</div>Upcoming events</div></div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="rd-card rd-card-accent p-3 h-100">
+                <h3>Upcoming dates</h3>
+                @if (!upcoming.Any())
+                {
+                    <p class="mb-0 text-muted">No upcoming events. Create one to get started.</p>
+                }
+                else
+                {
+                    <ul class="list-unstyled mb-0">
+                        @foreach (var e in upcoming.Take(6))
+                        {
+                            <li class="mb-2">
+                                <div class="fw-semibold">@e.Name</div>
+                                <div class="small text-muted">@e.Date.ToString("ddd, dd MMM yyyy HH:mm")</div>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="rd-card table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead><tr><th>Event</th><th>Date</th><th>Type</th><th>Enrolments</th><th></th></tr></thead>
+                    <tbody>
+                        @if (!Model.Any())
+                        {
+                            <tr><td colspan="5" class="text-center py-4">You have not created any events yet.</td></tr>
+                        }
+                        @foreach (var e in Model.OrderBy(x => x.Date))
+                        {
+                            <tr>
+                                <td class="fw-semibold">@e.Name</td>
+                                <td>@e.Date.ToString("dd MMM yyyy")</td>
+                                <td>@e.EventType</td>
+                                <td><span class="rd-role-pill">@e.EnrolmentCount</span></td>
+                                <td class="text-end"><a class="btn btn-sm btn-outline-rd" asp-action="Enrolments" asp-route-eventId="@e.Id">Enrolments</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
