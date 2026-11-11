@@ -1,0 +1,53 @@
+﻿@model ProfileViewModel
+@{
+    ViewData["Title"] = "Profile";
+}
+<div class="container mt-4" style="max-width:760px">
+    <h1>My profile</h1>
+
+    <div class="rd-card rd-card-accent p-4 mb-4">
+        <div class="d-flex align-items-center gap-4 flex-wrap">
+            @if (!string.IsNullOrEmpty(Model.PictureUrl))
+            {
+                <img class="rd-profile-pic" src="@Url.Action("Show", "Image", new { url = Model.PictureUrl })" alt="Profile picture" />
+            }
+            else
+            {
+                <div class="rd-profile-pic d-flex align-items-center justify-content-center fs-1 fw-bold text-white" style="background:#222">
+                    @(Model.Name.Length > 0 ? Model.Name.Substring(0, 1).ToUpper() : "?")
+                </div>
+            }
+            <form asp-action="Picture" method="post" enctype="multipart/form-data" class="flex-grow-1">
+                <label class="form-label">Profile picture (JPG, PNG or WEBP, up to 5 MB)</label>
+                <input type="file" name="file" accept="image/jpeg,image/png,image/webp" class="form-control mb-2" />
+                <button type="submit" class="btn btn-outline-rd btn-sm">Upload picture</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="rd-card p-4">
+        <h3>Personal details</h3>
+        <form asp-action="Profile" method="post" novalidate>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Full name</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Account type</label>
+                <input class="form-control" value="@Model.Role" disabled />
+            </div>
+            <button type="submit" class="btn btn-rd">Save changes</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
