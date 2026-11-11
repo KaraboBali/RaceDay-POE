@@ -1,3 +1,5 @@
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 using RaceDay.MVC.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,6 +36,15 @@ builder.Services.AddHttpClient<ApiClient>(client =>
     });
 
 var app = builder.Build();
+
+// One culture everywhere so numbers like 10.5 behave the same on every machine and in Docker.
+var invariant = CultureInfo.InvariantCulture;
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture(invariant),
+    SupportedCultures = new List<CultureInfo> { invariant },
+    SupportedUICultures = new List<CultureInfo> { invariant }
+});
 
 // Visitors never see raw error messages, only friendly pages.
 app.UseExceptionHandler("/Home/Error");
