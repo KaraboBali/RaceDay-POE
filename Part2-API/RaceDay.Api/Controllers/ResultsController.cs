@@ -91,7 +91,10 @@ public class ResultsController : ControllerBase
                 r.Position,
                 r.FinishTime,
                 Event = r.Enrolment.Category.Event.Name,
-                Category = r.Enrolment.Category.Name
+                EventDate = r.Enrolment.Category.Event.Date,
+                Category = r.Enrolment.Category.Name,
+                TotalFinishers = _db.Results.Count(x =>
+                    x.Enrolment.Category.EventId == r.Enrolment.Category.EventId)
             }).ToListAsync();
         return Ok(list);
     }
